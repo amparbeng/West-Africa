@@ -218,6 +218,7 @@ function getItem(item, extArray) {
 }
 
 function createMap(webmapitem) {
+    var extCornerCoordinate = 20037508.3427892;
     var mapDeferred = esri.arcgis.utils.createMap(webmapitem, "map", {
         mapOptions: {
             slider: configOptions.displaySlider,
@@ -225,7 +226,7 @@ function createMap(webmapitem) {
             wrapAround180: !configOptions.constrainmapextent,
             showAttribution: true,
             //set wraparound to false if the extent is limited.
-            logo: !configOptions.customlogo.image //hide esri logo if custom logo is provided
+            logo: !configOptions.customlogo.image//, //hide esri logo if custom logo is provided
         },
         ignorePopups: false,
         bingMapsKey: configOptions.bingmapskey
@@ -279,7 +280,8 @@ function createMap(webmapitem) {
             esri.hide(dojo.byId('webmap-toolbar-right'));
         }
 
-        // add static tile map  
+        // add static tile map, forces the map to use just the zoom levels of there tiles, 
+        // so the google map tiles on top of it are not distorted 
 
         dojo.declare("my.StaticTiledLayer", esri.layers.TiledMapServiceLayer, {
 
@@ -316,12 +318,12 @@ function createMap(webmapitem) {
           },
 
           GetTileUrl: function(extent, width, height, callback) {
-
+            callback(null);
           }
         });
 
         var staticTileLayer = new my.StaticTiledLayer();
-        staticTileLayer.visible = false;
+        staticTileLayer.visible = true;
         map.addLayer(staticTileLayer);
 
 		// add google Map 
